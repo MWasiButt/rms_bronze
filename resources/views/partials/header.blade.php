@@ -7,8 +7,8 @@
         <!-- HORIZONTAL BRAND LOGO -->
         <div class="app-sidebar-logo app-horizontal-logo justify-content-center align-items-center">
           <a href="index">
-            <img height="35" class="app-sidebar-logo-default" alt="Logo" loading="lazy" src="{{ asset('assets/images/light-logo.png') }}">">
-            <img height="40" class="app-sidebar-logo-minimize" alt="Logo" loading="lazy" src="{{ asset('assets/images/Favicon.png') }}">">
+            <img height="35" class="app-sidebar-logo-default" alt="Logo" loading="lazy" src="{{ asset('assets/images/light-logo.png') }}">
+            <img height="40" class="app-sidebar-logo-minimize" alt="Logo" loading="lazy" src="{{ asset('assets/images/Favicon.png') }}">
           </a>
         </div>
 

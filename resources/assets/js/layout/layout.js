@@ -253,10 +253,11 @@ function updateLayout() {
   // Function to handle the page loader
   function pageLoader() {
     var preloader = document.getElementById('preloader');
-    if (preloader && ATTRIBUTES.PAGE_LOADER !== "hidden") {
+    const pageLoaderMode = sessionStorage.getItem(ATTRIBUTES.PAGE_LOADER) || DEFAULT_VALUES[ATTRIBUTES.PAGE_LOADER];
+    if (preloader && pageLoaderMode !== "hidden") {
       setTimeout(function () {
         preloader.classList.add("hidden");
-      }, 1500);
+      }, 500);
     } else {
       preloader?.classList.add("hidden");
     }
