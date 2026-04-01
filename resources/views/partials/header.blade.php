@@ -526,13 +526,13 @@
               <span class="position-absolute border-2 border border-white h-12px w-12px rounded-circle bg-success end-0 bottom-0"></span>
             </span>
             <span>
-              <span class="h6 d-none d-xl-inline-block text-start fw-semibold mb-0">Sophia Johnson</span>
-              <span class="d-none d-xl-block fs-12 text-start text-muted">CEO</span>
+              <span class="h6 d-none d-xl-inline-block text-start fw-semibold mb-0">{{ auth()->user()?->name ?? 'Guest User' }}</span>
+              <span class="d-none d-xl-block fs-12 text-start text-muted">{{ auth()->user()?->email ?? 'Not signed in' }}</span>
             </span>
           </button>
 
           <div class="dropdown-menu dropdown-menu-end header-language-scrollable" aria-labelledby="accountNavbarDropdown">
-            <div class="dropdown dropstart d-block">
+            {{-- <div class="dropdown dropstart d-block">
               <a class="dropdown-item d-block w-100 text-start" href="#!" data-bs-toggle="dropdown" aria-expanded="false">
                 Set status
               </a>
@@ -554,35 +554,43 @@
                   Reset status
                 </li>
               </ul>
-            </div>
+            </div> --}}
 
-            <a class="dropdown-item" href="../pages-profile-overview">Profile</a>
-            <a class="dropdown-item" href="../apps-chat">Messages</a>
-            <a class="dropdown-item" href="../apps-todo">My Task</a>
+            @auth
+              <a class="dropdown-item" href="../pages-profile-overview">Profile</a>
+              {{-- <a class="dropdown-item" href="../apps-chat">Messages</a> --}}
+              {{-- <a class="dropdown-item" href="../apps-todo">My Task</a> --}}
 
-            <div class="dropdown-divider"></div>
+              {{-- <div class="dropdown-divider"></div> --}}
 
-            <a class="dropdown-item" href="#!">
-              <div class="d-flex align-items-center">
-                <div class="flex-shrink-0">
-                  <div class="avatar-item avatar avatar-title text-white bg-primary border-0 fs-12">
-                    SRB
+              {{-- <a class="dropdown-item" href="#!">
+                <div class="d-flex align-items-center">
+                  <div class="flex-shrink-0">
+                    <div class="avatar-item avatar avatar-title text-white bg-primary border-0 fs-12">
+                      SRB
+                    </div>
+                  </div>
+                  <div class="flex-grow-1 ms-2">
+                    <h6 class="mb-0 lh-1">SRBThemes <span class="badge bg-primary-subtle text-primary rounded-pill text-uppercase ms-1 mb-0 py-1 fs-10">PRO</span></h6>
+                    <span class="card-text text-muted">google.com</span>
                   </div>
                 </div>
-                <div class="flex-grow-1 ms-2">
-                  <h6 class="mb-0 lh-1">SRBThemes <span class="badge bg-primary-subtle text-primary rounded-pill text-uppercase ms-1 mb-0 py-1 fs-10">PRO</span></h6>
-                  <span class="card-text text-muted">google.com</span>
-                </div>
-              </div>
-            </a>
+              </a> --}}
 
-            <div class="dropdown-divider"></div>
+              <div class="dropdown-divider"></div>
 
-            <a class="dropdown-item" href="../pages-profile-edit-overview">Settings</a>
+              <a class="dropdown-item" href="../pages-profile-edit-overview">Settings</a>
 
-            <div class="dropdown-divider"></div>
+              <div class="dropdown-divider"></div>
 
-            <a class="dropdown-item" href="../auth-signin">Sign out</a>
+              <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="dropdown-item">Sign out</button>
+              </form>
+            @else
+              <a class="dropdown-item" href="{{ route('login') }}">Sign in</a>
+              <a class="dropdown-item" href="{{ route('register') }}">Create account</a>
+            @endauth
           </div>
         </div>
       </div>

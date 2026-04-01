@@ -63,30 +63,79 @@
                             <h4 class="fw-normal">Welcome to <span class="fw-bold text-primary">Herozi</span></h4>
                             <p class="text-muted mb-0">Please enter your information to access your account.</p>
                         </div>
-                        <form class="form-custom mt-10">
+                        <form class="form-custom mt-10" method="POST" action="{{ route('register.store') }}">
+                            @csrf
+
+                            @if ($errors->any())
+                                <div class="alert alert-danger" role="alert">
+                                    {{ $errors->first() }}
+                                </div>
+                            @endif
 
                             <div class="mb-5">
                                 <label class="form-label" for="login-email">Email<span class="text-danger ms-1">*</span>
                                 </label>
-                                <input type="text" class="form-control" id="login-email" placeholder="Enter your email">
+                                <input
+                                    type="email"
+                                    class="form-control @error('email') is-invalid @enderror"
+                                    id="login-email"
+                                    name="email"
+                                    value="{{ old('email') }}"
+                                    placeholder="Enter your email"
+                                    required
+                                >
                             </div>
 
                             <div class="mb-5">
                                 <label class="form-label" for="login-username">Username<span
                                         class="text-danger ms-1">*</span>
                                 </label>
-                                <input type="text" class="form-control" id="login-username"
-                                    placeholder="Enter your username">
+                                <input
+                                    type="text"
+                                    class="form-control @error('name') is-invalid @enderror"
+                                    id="login-username"
+                                    name="name"
+                                    value="{{ old('name') }}"
+                                    placeholder="Enter your username"
+                                    required
+                                >
                             </div>
 
                             <div class="mb-5">
                                 <label class="form-label" for="LoginPassword">Password<span
                                         class="text-danger ms-1">*</span></label>
                                 <div class="input-group">
-                                    <input type="password" id="LoginPassword" class="form-control" name="password"
-                                        placeholder="Enter your password" data-visible="false">
+                                    <input
+                                        type="password"
+                                        id="LoginPassword"
+                                        class="form-control @error('password') is-invalid @enderror"
+                                        name="password"
+                                        placeholder="Enter your password"
+                                        data-visible="false"
+                                        required
+                                    >
                                     <a class="input-group-text bg-transparent toggle-password" href="javascript:;"
                                         data-target="password">
+                                        <i class="ri-eye-off-line text-muted toggle-icon"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="mb-5">
+                                <label class="form-label" for="LoginPasswordConfirmation">Confirm Password<span
+                                        class="text-danger ms-1">*</span></label>
+                                <div class="input-group">
+                                    <input
+                                        type="password"
+                                        id="LoginPasswordConfirmation"
+                                        class="form-control"
+                                        name="password_confirmation"
+                                        placeholder="Confirm your password"
+                                        data-visible="false"
+                                        required
+                                    >
+                                    <a class="input-group-text bg-transparent toggle-password" href="javascript:;"
+                                        data-target="password_confirmation">
                                         <i class="ri-eye-off-line text-muted toggle-icon"></i>
                                     </a>
                                 </div>
@@ -99,17 +148,11 @@
                                 </p>
                             </div>
 
-                            <a href="auth-signin">
-                                <button type="button" class="btn btn-primary rounded-2 w-100 btn-loader">
-                                    <span class="indicator-label">
-                                        Sign Up
-                                    </span>
-                                    <span class="indicator-progress flex gap-2 justify-content-center w-100">
-                                        <span>Please Wait...</span>
-                                        <i class="ri-loader-2-fill"></i>
-                                    </span>
-                                </button>
-                            </a>
+                            <button type="submit" class="btn btn-primary rounded-2 w-100">
+                                <span class="indicator-label">
+                                    Sign Up
+                                </span>
+                            </button>
                             <div class="center-hr my-10 text-nowrap text-muted">Create account with</div>
 
                             <div class="d-flex flex-wrap align-items-center justify-content-center gap-2">
@@ -128,7 +171,7 @@
                             </div>
                             <p class="mb-0 mt-5 text-muted text-center">
                                 Already have an account ?
-                                <a href="auth-signin" class="text-primary fw-medium text-decoraton-underline ms-1">
+                                <a href="{{ route('login') }}" class="text-primary fw-medium text-decoraton-underline ms-1">
                                     Sign In
                                 </a>
                             </p>

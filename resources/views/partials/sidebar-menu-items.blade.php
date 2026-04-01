@@ -27,7 +27,7 @@
         </ul>
         --}}
     </li>
-    <li class="slide">
+    {{-- <li class="slide">
         <a href="#!" class="side-menu__item" role="menuitem">
             <span class="side_menu_icon"><i class="ri-layout-line"></i></span>
             <span class="side-menu__label" data-lang="hr-layout">Layout</span>
@@ -50,7 +50,7 @@
                 <a href="demo-layout-small-icon" target="_blank" class="side-menu__item" role="menuitem" data-lang="hr-layout-small-icon">Small Icon</a>
             </li>
         </ul>
-    </li>
+    </li> --}}
     <li class="menu-title" role="presentation" data-lang="hr-title-applications">Applications</li>
     <li class="slide">
         <a href="#!" class="side-menu__item" role="menuitem">
