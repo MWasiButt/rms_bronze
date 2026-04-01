@@ -40,6 +40,16 @@ function updateLayout() {
     // Update the theme attribute on the <html> element
     document.documentElement.setAttribute(ATTRIBUTES.THEME, appliedTheme);
 
+    // Keep the default sidebar palette aligned with light/dark theme changes.
+    // Leave gradient sidebar untouched so an explicit sidebar style choice still wins.
+    const currentSidebar = sessionStorage.getItem(ATTRIBUTES.SIDEBAR) || DEFAULT_VALUES[ATTRIBUTES.SIDEBAR];
+    if (currentSidebar !== 'gradient-sidebar') {
+      const nextSidebar = appliedTheme === THEME_MODES.DARK ? 'dark-sidebar' : 'light-sidebar';
+      document.documentElement.setAttribute(ATTRIBUTES.SIDEBAR, nextSidebar);
+      sessionStorage.setItem(ATTRIBUTES.SIDEBAR, nextSidebar);
+      updateActiveClass(ATTRIBUTES.SIDEBAR, nextSidebar);
+    }
+
     // Store the selected theme in sessionStorage
     sessionStorage.setItem(ATTRIBUTES.THEME, theme);
   }
