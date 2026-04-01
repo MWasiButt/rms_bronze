@@ -1,6 +1,11 @@
 <ul class="main-menu" id="all-menu-items" role="menu">
     <li class="menu-title" role="presentation" data-lang="hr-title-main">Main</li>
     <li class="slide">
+        <a href="index" class="side-menu__item" role="menuitem">
+            <span class="side_menu_icon"><i class="ri-home-2-line"></i></span>
+            <span class="side-menu__label" data-lang="hr-dashboards">Dashboard</span>
+        </a>
+        {{-- 
         <a href="#!" class="side-menu__item" role="menuitem">
             <span class="side_menu_icon"><i class="ri-home-2-line"></i></span>
             <span class="side-menu__label" data-lang="hr-dashboards">Dashboards</span>
@@ -20,6 +25,7 @@
                 <a href="dashboard-social-media" data-lang="hr-dashboards-social-media" class="side-menu__item" role="menuitem">Social Media</a>
             </li>
         </ul>
+        --}}
     </li>
     <li class="slide">
         <a href="#!" class="side-menu__item" role="menuitem">
