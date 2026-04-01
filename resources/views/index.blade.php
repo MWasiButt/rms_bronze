@@ -118,7 +118,7 @@
             </div>
         </div>
 
-        <div class="row g-4 mb-4">
+        {{-- <div class="row g-4 mb-4">
             <div class="col-lg-6 h-100">
                 <div class="card mb-0">
                     <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-3">
@@ -375,7 +375,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </div>
 @endsection
 

@@ -36,7 +36,7 @@
           <!-- Search Input for Desktop -->
           <form class="d-none d-sm-block header-search" data-bs-toggle="dropdown" aria-expanded="false">
             <div class="form-icon">
-              <input type="search" class="form-control form-control-icon" id="firstNameLayout4" placeholder="Search in Herozi" required>
+              <input type="search" class="form-control form-control-icon" id="firstNameLayout4" placeholder="Search..." required>
               <i class="ri-search-2-line text-muted"></i>
             </div>
           </form>
@@ -121,7 +121,7 @@
       <div class="header-right hstack gap-3">
         <div class="hstack gap-0 gap-sm-1">
           <!-- Cart -->
-          <div class="dropdown features-dropdown">
+          {{-- <div class="dropdown features-dropdown">
             <button type="button" class="btn icon-btn btn-text-primary rounded-circle position-relative" id="page-header-cart-dropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
               <i class="bi bi-bag fs-2xl"></i>
               <span class="position-absolute translate-middle badge rounded-pill p-1 min-w-20px badge text-bg-primary">5</span>
@@ -204,10 +204,10 @@
 
               </div>
             </div>
-          </div>
+          </div> --}}
 
           <!-- Apps -->
-          <div class="dropdown features-dropdown">
+          {{-- <div class="dropdown features-dropdown">
             <button type="button" class="btn icon-btn btn-text-primary rounded-circle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <span class="visually-hidden">Browse by Apps</span>
               <i class="bi bi-grid"></i>
@@ -287,10 +287,10 @@
                 </div>
               </div>
             </div>
-          </div>
+          </div> --}}
 
           <!-- Language -->
-          <div class="dropdown features-dropdown" id="language-dropdown">
+          {{-- <div class="dropdown features-dropdown" id="language-dropdown">
             <a href="#!" class="btn icon-btn btn-text-primary rounded-circle" data-bs-toggle="dropdown" aria-expanded="false">
               <div class="avatar-item avatar-xs">
                 <img class="img-fluid avatar-xs" src="{{ asset('assets/images/flags/us.svg') }}" loading="lazy" alt="avatar image">
@@ -340,7 +340,7 @@
               </a>
 
             </div>
-          </div>
+          </div> --}}
 
           <!-- Theme -->
           <div class="dropdown features-dropdown d-none d-sm-block">
@@ -350,17 +350,15 @@
             </button>
 
             <div class="dropdown-menu dropdown-menu-end header-language-scrollable" data-simplebar>
-
               <div class="dropdown-item cursor-pointer" id="light-theme">
                 <span class="hstack gap-2 align-middle"><i class="ri-sun-line"></i>Light</span>
               </div>
               <div class="dropdown-item cursor-pointer" id="dark-theme">
                 <span class="hstack gap-2 align-middle"><i class="ri-moon-clear-line"></i>Dark</span>
               </div>
-              <div class="dropdown-item cursor-pointer" id="system-theme">
+              {{-- <div class="dropdown-item cursor-pointer" id="system-theme">
                 <span class="hstack gap-2 align-middle"><i class="ri-computer-line"></i>System</span>
-              </div>
-
+              </div> --}}
             </div>
           </div>
 
