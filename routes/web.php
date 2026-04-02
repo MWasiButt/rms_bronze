@@ -1,16 +1,16 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
+use Illuminate\Support\Facades\Route;
+
+Route::redirect('/register', '/login');
+Route::redirect('/auth-signup', '/login');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::get('/auth-signin', [AuthController::class, 'showLogin']);
     Route::post('/login', [AuthController::class, 'login'])->name('login.attempt');
-    Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
-    Route::get('/auth-signup', [AuthController::class, 'showRegister']);
-    Route::post('/register', [AuthController::class, 'register'])->name('register.store');
 });
 
 Route::middleware('auth')->group(function () {
