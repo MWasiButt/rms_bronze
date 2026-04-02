@@ -1,6 +1,6 @@
 @extends('partials.layouts.master-auth')
 
-@section('title', 'Sign Up | Herozi - The Worlds Best Selling Bootstrap Admin & Dashboard Template by SRBThemes')
+@section('title', 'Sign Up | RMS Bronze')
 
 @section('css')
     @include('partials.head-css', ['auth' => 'layout-auth'])
@@ -8,7 +8,6 @@
 
 @section('content')
 
-    <!-- START -->
     <div class="account-pages">
         <img src="{{ asset('assets/images/auth/auth_bg.jpeg') }}" alt="auth_bg" class="auth-bg light">
         <img src="{{ asset('assets/images/auth/auth_bg_dark.jpg') }}" alt="auth_bg_dark" class="auth-bg dark">
@@ -32,23 +31,20 @@
                                 <div class="carousel-inner">
                                     <div class="carousel-item active">
                                         <div class="text-center text-white my-4 p-4">
-                                            <h3 class="text-white">Learn and Practice</h3>
-                                            <p class="mt-3">Manage your application seamlessly. Log in to access your
-                                                dashboard and configure settings.</p>
+                                            <h3 class="text-white">Launch Your Outlet</h3>
+                                            <p class="mt-3">Create your Bronze workspace, first outlet, and owner account in one step.</p>
                                         </div>
                                     </div>
                                     <div class="carousel-item">
                                         <div class="text-center text-white my-4 p-4">
-                                            <h3 class="text-white">Secure Your Data</h3>
-                                            <p class="mt-3">Ensure your application remains secure. Utilize our tools to
-                                                monitor and protect your data effectively.</p>
+                                            <h3 class="text-white">Built for Daily Service</h3>
+                                            <p class="mt-3">Set up your business foundation now so menu, POS, kitchen, and reporting modules plug in cleanly.</p>
                                         </div>
                                     </div>
                                     <div class="carousel-item">
                                         <div class="text-center text-white my-4 p-4">
-                                            <h3 class="text-white">User Management</h3>
-                                            <p class="mt-3">Easily manage users, roles, and permissions. Streamline your
-                                                admin tasks with our intuitive interface.</p>
+                                            <h3 class="text-white">Tenant-Aware From Day One</h3>
+                                            <p class="mt-3">Each signup creates an isolated business space with its own outlet, settings, and owner user.</p>
                                         </div>
                                     </div>
                                 </div>
@@ -60,8 +56,8 @@
                 <div class="col-lg-6">
                     <div class="auth-box card card-body m-0 h-100 border-0 justify-content-center">
                         <div class="mb-5 text-center">
-                            <h4 class="fw-normal">Welcome to <span class="fw-bold text-primary">Herozi</span></h4>
-                            <p class="text-muted mb-0">Please enter your information to access your account.</p>
+                            <h4 class="fw-normal">Create your <span class="fw-bold text-primary">RMS Bronze</span> workspace</h4>
+                            <p class="text-muted mb-0">We will create your business, first outlet, and owner account together.</p>
                         </div>
                         <form class="form-custom mt-10" method="POST" action="{{ route('register.store') }}">
                             @csrf
@@ -72,48 +68,57 @@
                                 </div>
                             @endif
 
-                            <div class="mb-5">
-                                <label class="form-label" for="login-email">Email<span class="text-danger ms-1">*</span>
-                                </label>
-                                <input
-                                    type="email"
-                                    class="form-control @error('email') is-invalid @enderror"
-                                    id="login-email"
-                                    name="email"
-                                    value="{{ old('email') }}"
-                                    placeholder="Enter your email"
-                                    required
-                                >
+                            <div class="row">
+                                <div class="col-md-6 mb-5">
+                                    <label class="form-label" for="business-name">Business Name<span class="text-danger ms-1">*</span></label>
+                                    <input type="text" class="form-control @error('business_name') is-invalid @enderror"
+                                        id="business-name" name="business_name" value="{{ old('business_name') }}"
+                                        placeholder="Bronze Cafe" required>
+                                </div>
+                                <div class="col-md-6 mb-5">
+                                    <label class="form-label" for="outlet-name">Outlet Name<span class="text-danger ms-1">*</span></label>
+                                    <input type="text" class="form-control @error('outlet_name') is-invalid @enderror"
+                                        id="outlet-name" name="outlet_name" value="{{ old('outlet_name', 'Main Outlet') }}"
+                                        placeholder="Main Outlet" required>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-5">
+                                    <label class="form-label" for="owner-name">Owner Name<span class="text-danger ms-1">*</span></label>
+                                    <input type="text" class="form-control @error('name') is-invalid @enderror"
+                                        id="owner-name" name="name" value="{{ old('name') }}"
+                                        placeholder="Enter owner name" required>
+                                </div>
+                                <div class="col-md-6 mb-5">
+                                    <label class="form-label" for="login-email">Email<span class="text-danger ms-1">*</span></label>
+                                    <input type="email" class="form-control @error('email') is-invalid @enderror"
+                                        id="login-email" name="email" value="{{ old('email') }}"
+                                        placeholder="Enter your email" required>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-5">
+                                    <label class="form-label" for="phone">Phone</label>
+                                    <input type="text" class="form-control @error('phone') is-invalid @enderror"
+                                        id="phone" name="phone" value="{{ old('phone') }}"
+                                        placeholder="Optional phone number">
+                                </div>
+                                <div class="col-md-6 mb-5">
+                                    <label class="form-label" for="address">Address</label>
+                                    <input type="text" class="form-control @error('address') is-invalid @enderror"
+                                        id="address" name="address" value="{{ old('address') }}"
+                                        placeholder="Optional outlet address">
+                                </div>
                             </div>
 
                             <div class="mb-5">
-                                <label class="form-label" for="login-username">Username<span
-                                        class="text-danger ms-1">*</span>
-                                </label>
-                                <input
-                                    type="text"
-                                    class="form-control @error('name') is-invalid @enderror"
-                                    id="login-username"
-                                    name="name"
-                                    value="{{ old('name') }}"
-                                    placeholder="Enter your username"
-                                    required
-                                >
-                            </div>
-
-                            <div class="mb-5">
-                                <label class="form-label" for="LoginPassword">Password<span
-                                        class="text-danger ms-1">*</span></label>
+                                <label class="form-label" for="LoginPassword">Password<span class="text-danger ms-1">*</span></label>
                                 <div class="input-group">
-                                    <input
-                                        type="password"
-                                        id="LoginPassword"
-                                        class="form-control @error('password') is-invalid @enderror"
-                                        name="password"
-                                        placeholder="Enter your password"
-                                        data-visible="false"
-                                        required
-                                    >
+                                    <input type="password" id="LoginPassword"
+                                        class="form-control @error('password') is-invalid @enderror" name="password"
+                                        placeholder="Enter your password" data-visible="false" required>
                                     <a class="input-group-text bg-transparent toggle-password" href="javascript:;"
                                         data-target="password">
                                         <i class="ri-eye-off-line text-muted toggle-icon"></i>
@@ -122,18 +127,11 @@
                             </div>
 
                             <div class="mb-5">
-                                <label class="form-label" for="LoginPasswordConfirmation">Confirm Password<span
-                                        class="text-danger ms-1">*</span></label>
+                                <label class="form-label" for="LoginPasswordConfirmation">Confirm Password<span class="text-danger ms-1">*</span></label>
                                 <div class="input-group">
-                                    <input
-                                        type="password"
-                                        id="LoginPasswordConfirmation"
-                                        class="form-control"
-                                        name="password_confirmation"
-                                        placeholder="Confirm your password"
-                                        data-visible="false"
-                                        required
-                                    >
+                                    <input type="password" id="LoginPasswordConfirmation" class="form-control"
+                                        name="password_confirmation" placeholder="Confirm your password"
+                                        data-visible="false" required>
                                     <a class="input-group-text bg-transparent toggle-password" href="javascript:;"
                                         data-target="password_confirmation">
                                         <i class="ri-eye-off-line text-muted toggle-icon"></i>
@@ -142,33 +140,15 @@
                             </div>
 
                             <div class="mb-5">
-                                <p class="mb-0 fs-xs text-muted fst-italic">By registering you agree to the Herozi
-                                    <a href="#!"
-                                        class="text-primary text-decoration-underline fst-normal fw-medium">Terms of Use</a>
+                                <p class="mb-0 fs-xs text-muted fst-italic">By registering you agree to the RMS Bronze
+                                    <a href="#!" class="text-primary text-decoration-underline fst-normal fw-medium">Terms of Use</a>
                                 </p>
                             </div>
 
                             <button type="submit" class="btn btn-primary rounded-2 w-100">
-                                <span class="indicator-label">
-                                    Sign Up
-                                </span>
+                                <span class="indicator-label">Create Business Account</span>
                             </button>
-                            <div class="center-hr my-10 text-nowrap text-muted">Create account with</div>
 
-                            <div class="d-flex flex-wrap align-items-center justify-content-center gap-2">
-                                <button type="button" class="btn btn-outline-facebook icon-btn">
-                                    <i class="ri-facebook-fill"></i>
-                                </button>
-                                <button type="button" class="btn btn-outline-google icon-btn">
-                                    <i class="ri-google-fill"></i>
-                                </button>
-                                <button type="button" class="btn btn-outline-twitter icon-btn">
-                                    <i class="ri-twitter-fill"></i>
-                                </button>
-                                <button type="button" class="btn btn-outline-instagram icon-btn">
-                                    <i class="ri-instagram-fill"></i>
-                                </button>
-                            </div>
                             <p class="mb-0 mt-5 text-muted text-center">
                                 Already have an account ?
                                 <a href="{{ route('login') }}" class="text-primary fw-medium text-decoraton-underline ms-1">
@@ -184,7 +164,5 @@
     </div>
 @endsection
 @section('js')
-
-    <!-- App js -->
     <script type="module" src="{{ asset('assets/js/app.js') }}"></script>
 @endsection
