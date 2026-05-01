@@ -589,7 +589,6 @@
               </form>
             @else
               <a class="dropdown-item" href="{{ route('login') }}">Sign in</a>
-              <a class="dropdown-item" href="{{ route('register') }}">Create account</a>
             @endauth
           </div>
         </div>

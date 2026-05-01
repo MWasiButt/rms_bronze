@@ -1,0 +1,213 @@
+Here’s the corrected **RMS Bronze handover roadmap**, based only on your Bronze RMS plan.
+
+**Phase 1: Foundation Finalization**
+- Install/configure Laravel Sanctum.
+- Add `HasApiTokens` to `User`.
+- Build tenant scoping middleware.
+- Enforce limits:
+  - Single outlet = `1`
+  - POS devices = `2`
+  - Active users = `3`
+- Add tests for limits and tenant isolation.
+- Finalize demo seed data.
+
+**Phase 2: Auth & Roles**
+- Confirm roles:
+  - `OWNER`
+  - `CASHIER`
+  - `KITCHEN`
+- Protect owner-only screens.
+- Protect cashier/order/payment screens.
+- Protect kitchen/KDS screens.
+- Add password reset.
+- Add account activation/deactivation.
+- Add basic rate limiting for login/API.
+
+**Phase 3: Catalog & Menu**
+- Product category CRUD.
+- Menu item CRUD.
+- Modifier group CRUD.
+- Modifier option CRUD.
+- Attach modifier groups to menu items.
+- Per-item tax rate.
+- Tax mode:
+  - Inclusive
+  - Exclusive
+- Soft delete categories/menu items.
+- Menu cache layer.
+
+**Phase 4: Tables & Service**
+- Table management CRUD.
+- Dine-in table assignment.
+- Takeaway order support.
+- Table status display:
+  - Available
+  - Occupied
+  - Ordered
+  - Ready/Served
+- Owner/cashier access.
+
+**Phase 5: Orders**
+- Real POS/order screen connected to database.
+- Create order.
+- Add/remove items.
+- Add modifiers.
+- Quantity change.
+- Order-level discount.
+- Tax calculation.
+- Order lifecycle:
+  - `OPEN`
+  - `SENT_TO_KITCHEN`
+  - `READY`
+  - `SERVED`
+  - `VOIDED`
+  - `PAID`
+- Tenant-safe order numbering.
+
+**Phase 6: Kitchen**
+- Create KOT when order is sent to kitchen.
+- Basic KDS screen.
+- Kitchen ticket statuses.
+- Kitchen can update:
+  - Pending
+  - In progress
+  - Ready
+  - Served
+- Single kitchen station only.
+- Kitchen role access only.
+
+**Phase 7: Payments & Receipts**
+- Payment methods:
+  - Cash
+  - Card
+- Mark order as paid.
+- Prevent overpayment/underpayment.
+- Receipt generation:
+  - Thermal receipt view
+  - PDF receipt
+- Receipt print job creation.
+- Payment method summary data.
+
+**Phase 8: Inventory Basic**
+- Stock item CRUD.
+- Stock movement ledger:
+  - `IN`
+  - `OUT`
+  - `SALE`
+  - `ADJUST`
+- Simple recipe/BOM setup.
+- Link menu item to stock items.
+- Auto-deduct stock on paid sale.
+- Soft delete stock items.
+- Basic low-stock indicators if useful.
+
+**Phase 9: Reporting**
+- Daily sales report.
+- Z-read/end-of-day report.
+- Category breakdown.
+- Item breakdown.
+- Payment method summary.
+- Date filters.
+- Export later if needed, but not core unless client asks.
+
+**Phase 10: Printing & Queues**
+- Print jobs queue:
+  - `RECEIPT`
+  - `KOT`
+- Print job statuses:
+  - Pending
+  - Processing
+  - Completed
+  - Failed
+- Redis queue config.
+- Horizon setup.
+- Print agent integration endpoint/API.
+- Retry failed print jobs.
+
+**Phase 11: Real-Time**
+- WebSocket setup.
+- Channels:
+  - `tenant.{id}.orders`
+  - `tenant.{id}.kitchen`
+  - `tenant.{id}.print`
+- Events:
+  - `order.created`
+  - `order.sent_to_kitchen`
+  - `order.paid`
+  - `kitchen.ticket.status_changed`
+  - `print.job.created`
+- Update POS/KDS/print queue screens live.
+
+**Phase 12: Settings**
+- Tenant settings screen:
+  - Currency
+  - Timezone
+  - Receipt header
+  - Receipt footer
+  - Default tax
+- Outlet settings screen:
+  - Name
+  - Code
+  - Phone
+  - Email
+  - Address
+  - Basic service settings
+- Bronze feature flags:
+  - `qr_ordering = false`
+  - `delivery = false`
+  - `inventory_basic = true`
+  - `kds_basic = true`
+  - `api_read = false`
+
+**Phase 13: Security & Governance**
+- Audit logs for:
+  - Login/logout
+  - Menu changes
+  - Order voids
+  - Payments
+  - Stock movements
+  - Settings changes
+- Money validation in cents.
+- Tenant ownership validation on every write.
+- Rate limiting.
+- Soft delete recovery/checks where needed.
+- Prevent cross-tenant access.
+
+**Phase 14: QA & Client Handover**
+- Feature tests:
+  - Login
+  - Tenant scoping
+  - Limits
+  - Menu CRUD
+  - Order lifecycle
+  - KOT flow
+  - Payment
+  - Receipt
+  - Stock deduction
+  - Reports
+- Seed demo data.
+- Prepare demo credentials.
+- Prepare deployment notes.
+- Prepare user guide:
+  - Add menu item
+  - Create order
+  - Send to kitchen
+  - Complete kitchen ticket
+  - Take payment
+  - Print receipt
+  - View reports
+- Final polish pass on UI text/navigation.
+
+**Suggested execution order from here**
+1. Sanctum + tenant middleware/tests  
+2. Catalog/menu CRUD  
+3. Tables  
+4. Orders lifecycle  
+5. Kitchen/KDS  
+6. Payments/receipts  
+7. Inventory deduction  
+8. Reports  
+9. Queues/printing  
+10. Real-time  
+11. Settings/governance  
+12. QA/client handover
