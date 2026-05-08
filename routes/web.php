@@ -10,6 +10,7 @@ use App\Http\Controllers\DiningTableController;
 use App\Http\Controllers\KitchenController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PrintJobController;
+use App\Http\Controllers\QrOrderController;
 use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RecipeController;
@@ -21,6 +22,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::redirect('/register', '/login');
 Route::redirect('/auth-signup', '/login');
+Route::get('/qr-order', [QrOrderController::class, 'show'])->name('customer.order');
+Route::get('/qr/table/{table}/menu', [QrOrderController::class, 'show'])->name('customer.table.order');
+Route::post('/qr/orders', [QrOrderController::class, 'store'])->name('customer.orders.store');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');

@@ -5,7 +5,7 @@ use App\Http\Controllers\PrintAgentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['auth:sanctum', 'throttle:api', 'tenant.context', 'bronze.limits'])->get('/me', function (Request $request, TenantContext $tenantContext) {
+Route::middleware(['auth:sanctum', 'throttle:api', 'tenant.context', 'bronze.limits', 'feature:api_read'])->get('/me', function (Request $request, TenantContext $tenantContext) {
     return [
         'user' => [
             'id' => $request->user()->id,

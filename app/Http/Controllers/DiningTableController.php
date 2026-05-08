@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DiningTable;
+use App\Support\Audit;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -32,7 +33,7 @@ class DiningTableController extends Controller
     {
         $validated = $this->validatedTable($request);
 
-        DiningTable::create([
+        $table = DiningTable::create([
             'tenant_id' => $request->user()->tenant_id,
             'outlet_id' => $request->user()->outlet_id,
             'name' => $validated['name'],
@@ -40,6 +41,8 @@ class DiningTableController extends Controller
             'seats' => $validated['seats'] ?? null,
             'is_active' => $request->boolean('is_active'),
         ]);
+
+        Audit::record('table.created', $table, [], $table->getAttributes(), $request);
 
         return redirect()->route('tables.index')->with('status', 'Table created.');
     }
@@ -55,6 +58,7 @@ class DiningTableController extends Controller
     {
         $this->authorizeTenantTable($request, $table);
         $validated = $this->validatedTable($request, $table);
+        $oldValues = $table->getOriginal();
 
         $table->update([
             'name' => $validated['name'],
@@ -62,6 +66,8 @@ class DiningTableController extends Controller
             'seats' => $validated['seats'] ?? null,
             'is_active' => $request->boolean('is_active'),
         ]);
+
+        Audit::record('table.updated', $table, $oldValues, $table->getChanges(), $request);
 
         return redirect()->route('tables.index')->with('status', 'Table updated.');
     }
@@ -78,7 +84,9 @@ class DiningTableController extends Controller
             return back()->with('error', 'This table has an active order and cannot be deleted.');
         }
 
+        $oldValues = $table->getOriginal();
         $table->delete();
+        Audit::record('table.deleted', $table, $oldValues, ['deleted_at' => $table->deleted_at], $request);
 
         return back()->with('status', 'Table deleted.');
     }

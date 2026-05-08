@@ -31,11 +31,13 @@
             </div>
         </div>
     </div>
+    {{-- Bronze cleanup: legacy extra closing wrappers disabled to keep the report layout valid.
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    --}}
 
     <div class="row g-4 mb-4">
         <div class="col-md-6 col-xl-3">
@@ -81,10 +83,18 @@
                 </div>
                 <div class="card-body">
                     <div class="d-flex flex-column gap-2">
-                        <div class="d-flex justify-content-between"><span class="text-muted">Gross Subtotal</span><span>{{ number_format($summary['subtotal_cents'] / 100, 2) }}</span></div>
-                        <div class="d-flex justify-content-between"><span class="text-muted">Tax</span><span>{{ number_format($summary['tax_cents'] / 100, 2) }}</span></div>
-                        <div class="d-flex justify-content-between"><span class="text-muted">Discounts</span><span>{{ number_format($summary['discount_cents'] / 100, 2) }}</span></div>
-                        <div class="d-flex justify-content-between fw-semibold fs-5"><span>Net Sales</span><span>{{ number_format($summary['total_cents'] / 100, 2) }}</span></div>
+                        <div class="d-flex justify-content-between"><span class="text-muted">Paid Orders</span><span>{{ $zRead['order_count'] }}</span></div>
+                        <div class="d-flex justify-content-between"><span class="text-muted">Gross Subtotal</span><span>{{ number_format($zRead['gross_subtotal_cents'] / 100, 2) }}</span></div>
+                        <div class="d-flex justify-content-between"><span class="text-muted">Discounts</span><span>{{ number_format($zRead['discount_cents'] / 100, 2) }}</span></div>
+                        <div class="d-flex justify-content-between"><span class="text-muted">Tax</span><span>{{ number_format($zRead['tax_cents'] / 100, 2) }}</span></div>
+                        <div class="d-flex justify-content-between fw-semibold fs-5"><span>Net Sales</span><span>{{ number_format($zRead['net_sales_cents'] / 100, 2) }}</span></div>
+                        <hr class="my-2">
+                        <div class="d-flex justify-content-between"><span class="text-muted">Cash</span><span>{{ number_format($zRead['cash_cents'] / 100, 2) }} <small class="text-muted">({{ $zRead['cash_count'] }})</small></span></div>
+                        <div class="d-flex justify-content-between"><span class="text-muted">Card</span><span>{{ number_format($zRead['card_cents'] / 100, 2) }} <small class="text-muted">({{ $zRead['card_count'] }})</small></span></div>
+                        <div class="d-flex justify-content-between fw-semibold"><span>Payments Collected</span><span>{{ number_format($zRead['payments_collected_cents'] / 100, 2) }}</span></div>
+                        <hr class="my-2">
+                        <div class="d-flex justify-content-between"><span class="text-muted">First Paid Order</span><span>{{ $zRead['first_paid_order_at']?->format('H:i') ?? '-' }}</span></div>
+                        <div class="d-flex justify-content-between"><span class="text-muted">Last Paid Order</span><span>{{ $zRead['last_paid_order_at']?->format('H:i') ?? '-' }}</span></div>
                     </div>
                 </div>
             </div>

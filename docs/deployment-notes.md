@@ -17,7 +17,9 @@ Set production values in `.env`:
 - database credentials
 - mail credentials for password reset
 - Redis credentials
-- queue connection
+- `QUEUE_CONNECTION=redis`
+- `REDIS_QUEUE_CONNECTION=default`
+- `REDIS_QUEUE=default`
 - broadcast/Reverb credentials
 
 ## Install Steps
@@ -30,8 +32,16 @@ Set production values in `.env`:
 7. `php artisan config:cache`
 8. `php artisan route:cache`
 9. `php artisan view:cache`
-10. Start queue worker or Horizon.
+10. Start Horizon with a process manager: `php artisan horizon`.
 11. Start Reverb/WebSocket service if live POS/KDS/print updates are enabled.
+
+## Redis and Horizon Runtime Verification
+- Run `php artisan horizon:status` and confirm Horizon is active.
+- Run `php artisan queue:monitor redis:printing,redis:default --max=60` to verify both Bronze runtime queues are visible.
+- Open `/horizon` as an authenticated Owner and confirm the `supervisor-printing` supervisor is running.
+- Confirm `supervisor-printing` is consuming the `printing` and `default` queues.
+- Confirm the production supervisor/process manager restarts Horizon after deploys and server reboots.
+- After each deploy, run `php artisan horizon:terminate` so Horizon restarts with the latest cached code.
 
 ## Post-Deploy Checks
 - Login as Owner, Cashier, and Kitchen.
@@ -41,6 +51,10 @@ Set production values in `.env`:
 - Confirm stock deduction on a recipe-linked item.
 - Confirm reports show the paid test order.
 - Confirm print jobs appear in Print Queue.
+- Create a Sanctum token for the print agent user.
+- Call `GET /api/print-agent/jobs/next?type=RECEIPT` and confirm the response includes the order number, line items, payments, and `PROCESSING` status.
+- Call `PATCH /api/print-agent/jobs/{id}` with `{"status":"COMPLETED"}` and confirm the job stores `printed_at`.
+- Repeat `GET /api/print-agent/jobs/next?type=KOT` and confirm the response includes order items and kitchen ticket status.
 
 ## Known Production Note
 Laravel Horizon could not be installed locally on Windows because the required `pcntl` and `posix` PHP extensions are not available on Windows. Install and run Horizon on the Linux production server.

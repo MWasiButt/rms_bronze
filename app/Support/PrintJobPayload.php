@@ -27,6 +27,12 @@ class PrintJobPayload
                 'discount_cents' => $printJob->order->discount_cents,
                 'tax_cents' => $printJob->order->tax_cents,
                 'total_cents' => $printJob->order->total_cents,
+                'payments' => $printJob->order->payments->map(fn ($payment) => [
+                    'method' => $payment->method->value,
+                    'amount_cents' => $payment->amount_cents,
+                    'reference' => $payment->reference,
+                    'paid_at' => $payment->paid_at?->toIso8601String(),
+                ])->values(),
                 'items' => $printJob->order->items->map(fn ($item) => [
                     'name' => $item->item_name,
                     'sku' => $item->sku,
@@ -40,6 +46,12 @@ class PrintJobPayload
                     ])->values(),
                     'notes' => $item->notes,
                 ])->values(),
+                'kitchen_ticket' => $printJob->order->kitchenTicket ? [
+                    'id' => $printJob->order->kitchenTicket->id,
+                    'status' => $printJob->order->kitchenTicket->status->value,
+                    'fired_at' => $printJob->order->kitchenTicket->fired_at?->toIso8601String(),
+                    'notes' => $printJob->order->kitchenTicket->notes,
+                ] : null,
             ] : null,
         ];
     }

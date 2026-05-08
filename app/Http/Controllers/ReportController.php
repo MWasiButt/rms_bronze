@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\OrderStatus;
+use App\Enums\PaymentMethod;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Payment;
@@ -36,6 +37,7 @@ class ReportController extends Controller
             'range' => $range,
             'orders' => $orders,
             'summary' => $this->summary($orders),
+            'zRead' => $this->zReadSummary($orders, $payments),
             'dailySales' => $this->dailySales($orders),
             'categoryBreakdown' => $this->categoryBreakdown($orders),
             'itemBreakdown' => $this->itemBreakdown($orders),
@@ -55,6 +57,36 @@ class ReportController extends Controller
             'discount_cents' => (int) $orders->sum('discount_cents'),
             'total_cents' => $total,
             'average_ticket_cents' => $count > 0 ? (int) round($total / $count) : 0,
+        ];
+    }
+
+    private function zReadSummary(Collection $orders, Collection $payments): array
+    {
+        $paymentSummary = $this->paymentSummary($payments)->keyBy('method');
+        $cash = $paymentSummary->get(PaymentMethod::CASH->value, [
+            'method' => PaymentMethod::CASH->value,
+            'count' => 0,
+            'total_cents' => 0,
+        ]);
+        $card = $paymentSummary->get(PaymentMethod::CARD->value, [
+            'method' => PaymentMethod::CARD->value,
+            'count' => 0,
+            'total_cents' => 0,
+        ]);
+
+        return [
+            'order_count' => $orders->count(),
+            'gross_subtotal_cents' => (int) $orders->sum('subtotal_cents'),
+            'discount_cents' => (int) $orders->sum('discount_cents'),
+            'tax_cents' => (int) $orders->sum('tax_cents'),
+            'net_sales_cents' => (int) $orders->sum('total_cents'),
+            'payments_collected_cents' => (int) $payments->sum('amount_cents'),
+            'cash_count' => $cash['count'],
+            'cash_cents' => $cash['total_cents'],
+            'card_count' => $card['count'],
+            'card_cents' => $card['total_cents'],
+            'first_paid_order_at' => $orders->min('paid_at'),
+            'last_paid_order_at' => $orders->max('paid_at'),
         ];
     }
 

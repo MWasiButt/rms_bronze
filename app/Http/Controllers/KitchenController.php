@@ -9,8 +9,10 @@ use App\Models\KitchenTicket;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
+use Throwable;
 
 class KitchenController extends Controller
 {
@@ -78,7 +80,11 @@ class KitchenController extends Controller
             $ticket->order?->update($orderUpdates);
         });
 
-        event(new KitchenTicketStatusChanged($ticket->refresh()));
+        try {
+            event(new KitchenTicketStatusChanged($ticket->refresh()));
+        } catch (Throwable $exception) {
+            Log::warning('Kitchen ticket broadcast failed.', ['message' => $exception->getMessage()]);
+        }
 
         return back()->with('status', 'Kitchen ticket updated.');
     }

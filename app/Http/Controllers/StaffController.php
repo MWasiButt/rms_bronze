@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\UserRole;
 use App\Models\User;
+use App\Support\Audit;
 use App\Support\PlanALimits;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -48,7 +49,7 @@ class StaffController extends Controller
             $planLimits->assertCanAddUser($request->user()->tenant);
         }
 
-        User::create([
+        $staff = User::create([
             'tenant_id' => $request->user()->tenant_id,
             'outlet_id' => $request->user()->outlet_id,
             'name' => $validated['name'],
@@ -57,6 +58,8 @@ class StaffController extends Controller
             'role' => $role,
             'is_active' => $request->boolean('is_active'),
         ]);
+
+        Audit::record('staff.created', $staff, [], $staff->getAttributes(), $request);
 
         return redirect()
             ->route('staff.index')
@@ -79,6 +82,7 @@ class StaffController extends Controller
         $this->authorizeTenantStaff($request, $staff);
 
         $wasInactive = ! $staff->is_active;
+        $oldValues = $staff->getOriginal();
         $validated = $this->validatedStaff($request, $staff);
         $role = UserRole::from($validated['role']);
 
@@ -103,6 +107,8 @@ class StaffController extends Controller
 
         $staff->save();
 
+        Audit::record('staff.updated', $staff, $oldValues, $staff->getChanges(), $request);
+
         return redirect()
             ->route('staff.index')
             ->with('status', 'Staff account updated.');
@@ -118,7 +124,9 @@ class StaffController extends Controller
             $planLimits->assertCanAddUser($request->user()->tenant);
         }
 
+        $oldValues = $staff->getOriginal();
         $staff->forceFill(['is_active' => ! $staff->is_active])->save();
+        Audit::record('staff.status.updated', $staff, $oldValues, $staff->getChanges(), $request);
 
         return back()->with('status', $staff->is_active ? 'Staff account activated.' : 'Staff account deactivated.');
     }
@@ -128,6 +136,11 @@ class StaffController extends Controller
         $this->authorizeTenantStaff($request, $staff);
 
         $status = Password::sendResetLink(['email' => $staff->email]);
+
+        Audit::record('staff.password_reset.requested', $staff, [], [
+            'email' => $staff->email,
+            'status' => $status,
+        ], $request);
 
         return back()->with(
             $status === Password::RESET_LINK_SENT ? 'status' : 'error',

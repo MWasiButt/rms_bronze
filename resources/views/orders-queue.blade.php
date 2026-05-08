@@ -12,8 +12,11 @@
     @endif
 
     @php
+        use App\Enums\UserRole;
+
         $liveOrders = $columns->flatten(1);
         $readyCount = $columns->get('READY', collect())->count() + $columns->get('SERVED', collect())->count();
+        $canApproveOrders = in_array(auth()->user()->role, [UserRole::OWNER, UserRole::CASHIER], true);
     @endphp
 
     <div class="row g-4 mb-4">
@@ -98,7 +101,12 @@
                             @forelse ($orders as $order)
                                 <div class="border rounded-3 p-3">
                                     <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
-                                        <h6 class="mb-0">{{ $order->order_number }}</h6>
+                                        <div>
+                                            <h6 class="mb-1">{{ $order->order_number }}</h6>
+                                            @if ($status === 'OPEN')
+                                                <span class="badge bg-warning-subtle text-warning">Pending manager approval</span>
+                                            @endif
+                                        </div>
                                         <span class="text-muted fs-12">{{ $order->created_at?->diffForHumans() }}</span>
                                     </div>
                                     <p class="text-muted fs-13 mb-2">
@@ -111,8 +119,45 @@
                                         <span class="fw-semibold">{{ number_format($order->total_cents / 100, 2) }}</span>
                                         <span class="badge bg-light text-dark border">{{ $order->guest_count }} guests</span>
                                     </div>
+
+                                    @if ($order->items->isNotEmpty())
+                                        <div class="d-flex flex-column gap-2 mt-3">
+                                            @foreach ($order->items as $item)
+                                                <div class="border rounded-2 px-2 py-2 bg-light">
+                                                    <div class="d-flex justify-content-between gap-2">
+                                                        <span class="fw-semibold fs-13">{{ $item->item_name }}</span>
+                                                        <span class="badge bg-white text-dark border">x{{ $item->quantity }}</span>
+                                                    </div>
+                                                    @if ($item->modifiers->isNotEmpty())
+                                                        <p class="text-muted fs-12 mb-0">
+                                                            @foreach ($item->modifiers as $modifier)
+                                                                {{ $modifier->modifier_option_name }}@if (! $loop->last), @endif
+                                                            @endforeach
+                                                        </p>
+                                                    @endif
+                                                    @if ($item->notes)
+                                                        <p class="text-muted fs-12 mb-0">{{ $item->notes }}</p>
+                                                    @endif
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @endif
+
                                     @if ($order->notes)
                                         <p class="text-muted fs-13 mt-2 mb-0">{{ $order->notes }}</p>
+                                    @endif
+
+                                    @if ($status === 'OPEN' && $canApproveOrders)
+                                        <form method="POST" action="{{ route('orders.status', $order) }}" class="mt-3">
+                                            @csrf
+                                            @method('PATCH')
+                                            <input type="hidden" name="status" value="SENT_TO_KITCHEN">
+                                            <button type="submit" class="btn btn-sm btn-primary w-100">
+                                                Approve & Send to Kitchen
+                                            </button>
+                                        </form>
+                                    @elseif ($status === 'OPEN')
+                                        <p class="text-muted fs-12 mt-3 mb-0">Waiting for manager approval.</p>
                                     @endif
                                 </div>
                             @empty

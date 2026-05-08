@@ -228,6 +228,12 @@ class BronzeHandoverFlowTest extends TestCase
                 'to' => now()->toDateString(),
             ]))
             ->assertOk()
+            ->assertSee('Z-Read / End of Day')
+            ->assertSee('Paid Orders')
+            ->assertSee('Discounts')
+            ->assertSee('Tax')
+            ->assertSee('Cash')
+            ->assertSee('Card')
             ->assertSee('Payment Method Summary');
     }
 }

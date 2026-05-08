@@ -27,8 +27,10 @@ use App\Support\TableServiceStatus;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
+use Throwable;
 
 class ServiceController extends Controller
 {
@@ -71,7 +73,7 @@ class ServiceController extends Controller
                 OrderStatus::VOIDED,
                 OrderStatus::PAID,
             ])
-            ->with('table')
+            ->with(['table', 'items.modifiers'])
             ->latest()
             ->get()
             ->groupBy(fn (Order $order) => $order->status->value);
@@ -316,7 +318,7 @@ class ServiceController extends Controller
                     ]
                 );
 
-                event(new PrintJobCreated($printJob));
+                $this->broadcastSafely(new PrintJobCreated($printJob), 'Print job broadcast failed.');
             }
 
             if ($target === OrderStatus::READY) {
@@ -335,7 +337,7 @@ class ServiceController extends Controller
         });
 
         if ($target === OrderStatus::SENT_TO_KITCHEN) {
-            event(new OrderSentToKitchen($order->refresh()));
+            $this->broadcastSafely(new OrderSentToKitchen($order->refresh()), 'Order sent-to-kitchen broadcast failed.');
         }
 
         if ($target === OrderStatus::VOIDED) {
@@ -426,5 +428,14 @@ class ServiceController extends Controller
             ->count();
 
         return 'ORD-'.now()->format('Ymd').'-'.str_pad((string) ($count + 1), 4, '0', STR_PAD_LEFT);
+    }
+
+    private function broadcastSafely(object $event, string $message): void
+    {
+        try {
+            event($event);
+        } catch (Throwable $exception) {
+            Log::warning($message, ['message' => $exception->getMessage()]);
+        }
     }
 }
