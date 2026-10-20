@@ -61,4 +61,25 @@ class User extends Authenticatable
     {
         return $this->hasMany(Payment::class);
     }
+
+    /**
+     * @return array<int, string>
+     */
+    public function abilities(): array
+    {
+        $role = $this->role?->value;
+
+        if (! $role) {
+            return [];
+        }
+
+        return config("abilities.roles.{$role}", []);
+    }
+
+    public function hasAbility(string $ability): bool
+    {
+        $abilities = $this->abilities();
+
+        return in_array('*', $abilities, true) || in_array($ability, $abilities, true);
+    }
 }

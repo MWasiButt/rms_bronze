@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\OutletSetting;
 use App\Models\TenantSetting;
 use App\Support\Audit;
+use App\Support\PlanALimits;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -25,7 +26,8 @@ class SettingsController extends Controller
         return view('settings.edit', [
             'tenant' => $tenant,
             'outlet' => $outlet,
-            'tenantSetting' => $tenant->settings ?: $this->defaultTenantSettings($tenant->id),
+            'tenantSetting' => $tenant->settings ?: $this->defaultTenantSettings($tenant->id, $tenant->plan_code),
+            'featureFlags' => $this->planFeatureFlags($tenant->plan_code),
             'outletSetting' => $outlet->settings ?: new OutletSetting([
                 'outlet_id' => $outlet->id,
                 'service_charge_enabled' => false,
@@ -64,7 +66,7 @@ class SettingsController extends Controller
                 'receipt_header' => $validated['receipt_header'] ?? null,
                 'receipt_footer' => $validated['receipt_footer'] ?? null,
                 'default_tax_rate_bps' => (int) round((float) $validated['default_tax_rate'] * 100),
-                ...$this->bronzeFeatureFlags(),
+                ...$this->planFeatureFlags($tenant->plan_code),
             ]
         );
 
@@ -94,25 +96,24 @@ class SettingsController extends Controller
         return redirect()->route('settings.edit')->with('status', 'Settings updated.');
     }
 
-    private function defaultTenantSettings(int $tenantId): TenantSetting
+    private function defaultTenantSettings(int $tenantId, string $planCode): TenantSetting
     {
         return new TenantSetting([
             'tenant_id' => $tenantId,
             'currency' => 'USD',
             'timezone' => config('app.timezone', 'UTC'),
             'default_tax_rate_bps' => 0,
-            ...$this->bronzeFeatureFlags(),
+            ...$this->planFeatureFlags($planCode),
         ]);
     }
 
     private function bronzeFeatureFlags(): array
     {
-        return [
-            'qr_ordering' => false,
-            'delivery' => false,
-            'inventory_basic' => true,
-            'kds_basic' => true,
-            'api_read' => false,
-        ];
+        return PlanALimits::featureFlags(PlanALimits::PLAN_BRONZE);
+    }
+
+    private function planFeatureFlags(string $planCode): array
+    {
+        return PlanALimits::featureFlags($planCode);
     }
 }

@@ -19,13 +19,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $planCode = strtolower((string) env('RMS_PLAN_CODE', PlanALimits::PLAN_BRONZE));
+
         $tenant = Tenant::updateOrCreate(
             ['slug' => 'rms-bronze-demo'],
             [
-                'name' => 'RMS Bronze Demo Store',
-                'plan_code' => 'bronze',
+                'name' => $planCode === PlanALimits::PLAN_GOLD ? 'RMS Gold Demo Store' : 'RMS Bronze Demo Store',
+                'plan_code' => $planCode,
                 'status' => 'active',
-                ...PlanALimits::defaults(),
+                ...PlanALimits::defaults($planCode),
             ]
         );
 
@@ -51,11 +53,7 @@ class DatabaseSeeder extends Seeder
                 'receipt_header' => $tenant->name,
                 'receipt_footer' => 'Thank you for dining with us.',
                 'default_tax_rate_bps' => 1600,
-                'qr_ordering' => false,
-                'delivery' => false,
-                'inventory_basic' => true,
-                'kds_basic' => true,
-                'api_read' => false,
+                ...PlanALimits::featureFlags($planCode),
             ]
         );
 

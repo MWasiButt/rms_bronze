@@ -30,13 +30,14 @@ class EnsureUserHasTenantContext
 
             if (! $tenant) {
                 $businessName = $this->defaultBusinessName($user);
+                $planCode = PlanALimits::PLAN_BRONZE;
 
                 $tenant = Tenant::create([
                     'name' => $businessName,
                     'slug' => $this->generateUniqueSlug($businessName),
-                    'plan_code' => 'bronze',
+                    'plan_code' => $planCode,
                     'status' => 'active',
-                    ...PlanALimits::defaults(),
+                    ...PlanALimits::defaults($planCode),
                 ]);
 
                 TenantSetting::create([
@@ -46,11 +47,7 @@ class EnsureUserHasTenantContext
                     'receipt_header' => $tenant->name,
                     'receipt_footer' => 'Thank you for your visit.',
                     'default_tax_rate_bps' => 0,
-                    'qr_ordering' => false,
-                    'delivery' => false,
-                    'inventory_basic' => true,
-                    'kds_basic' => true,
-                    'api_read' => false,
+                    ...PlanALimits::featureFlags($planCode),
                 ]);
             }
 

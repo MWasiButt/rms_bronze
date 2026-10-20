@@ -20,8 +20,18 @@ class TenantSetting extends Model
         'qr_ordering',
         'delivery',
         'inventory_basic',
+        'inventory_advanced',
         'kds_basic',
+        'kds_pro',
+        'coupons',
+        'loyalty_basic',
         'api_read',
+        'webhooks',
+        'multi_outlet',
+        'commissary',
+        'analytics_advanced',
+        'role_permissions_advanced',
+        'shift_reports',
     ];
 
     protected function casts(): array
@@ -30,8 +40,18 @@ class TenantSetting extends Model
             'qr_ordering' => 'boolean',
             'delivery' => 'boolean',
             'inventory_basic' => 'boolean',
+            'inventory_advanced' => 'boolean',
             'kds_basic' => 'boolean',
+            'kds_pro' => 'boolean',
+            'coupons' => 'boolean',
+            'loyalty_basic' => 'boolean',
             'api_read' => 'boolean',
+            'webhooks' => 'boolean',
+            'multi_outlet' => 'boolean',
+            'commissary' => 'boolean',
+            'analytics_advanced' => 'boolean',
+            'role_permissions_advanced' => 'boolean',
+            'shift_reports' => 'boolean',
         ];
     }
 

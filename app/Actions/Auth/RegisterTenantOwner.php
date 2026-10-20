@@ -21,12 +21,14 @@ class RegisterTenantOwner
     public function handle(array $data): User
     {
         return DB::transaction(function () use ($data): User {
+            $planCode = strtolower((string) Arr::get($data, 'plan_code', PlanALimits::PLAN_BRONZE));
+
             $tenant = Tenant::create([
                 'name' => $data['business_name'],
                 'slug' => $this->generateUniqueSlug($data['business_name']),
-                'plan_code' => 'bronze',
+                'plan_code' => $planCode,
                 'status' => 'active',
-                ...PlanALimits::defaults(),
+                ...PlanALimits::defaults($planCode),
             ]);
 
             $outlet = Outlet::create([
@@ -46,11 +48,7 @@ class RegisterTenantOwner
                 'receipt_header' => $tenant->name,
                 'receipt_footer' => 'Thank you for your visit.',
                 'default_tax_rate_bps' => 0,
-                'qr_ordering' => false,
-                'delivery' => false,
-                'inventory_basic' => true,
-                'kds_basic' => true,
-                'api_read' => false,
+                ...PlanALimits::featureFlags($planCode),
             ]);
 
             OutletSetting::create([

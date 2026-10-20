@@ -17,8 +17,18 @@ class BronzeFeatureFlagsTest extends TestCase
             'qr_ordering' => false,
             'delivery' => false,
             'inventory_basic' => true,
+            'inventory_advanced' => false,
             'kds_basic' => true,
+            'kds_pro' => false,
+            'coupons' => false,
+            'loyalty_basic' => false,
             'api_read' => false,
+            'webhooks' => false,
+            'multi_outlet' => false,
+            'commissary' => false,
+            'analytics_advanced' => false,
+            'role_permissions_advanced' => false,
+            'shift_reports' => false,
         ], $method->invoke(new SettingsController()));
     }
 }

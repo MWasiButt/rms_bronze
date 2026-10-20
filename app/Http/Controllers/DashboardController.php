@@ -203,8 +203,12 @@ class DashboardController extends Controller
             'team' => $team,
             'featureFlags' => [
                 ['label' => 'Inventory Basic', 'enabled' => (bool) $settings?->inventory_basic],
+                ['label' => 'Inventory Advanced', 'enabled' => (bool) $settings?->inventory_advanced],
                 ['label' => 'KDS Basic', 'enabled' => (bool) $settings?->kds_basic],
                 ['label' => 'QR Ordering', 'enabled' => (bool) $settings?->qr_ordering],
+                ['label' => 'Coupons', 'enabled' => (bool) $settings?->coupons],
+                ['label' => 'Loyalty Basic', 'enabled' => (bool) $settings?->loyalty_basic],
+                ['label' => 'Shift Reports', 'enabled' => (bool) $settings?->shift_reports],
                 ['label' => 'Delivery', 'enabled' => (bool) $settings?->delivery],
                 ['label' => 'Read API', 'enabled' => (bool) $settings?->api_read],
             ],
@@ -222,7 +226,7 @@ class DashboardController extends Controller
             ],
             'heroStats' => [
                 ['label' => 'Menu Items', 'value' => (string) MenuItem::where('tenant_id', $tenantId)->where('is_active', true)->count(), 'meta' => 'Active sellable items'],
-                ['label' => 'Staff Accounts', 'value' => count($team).' / 3', 'meta' => 'Bronze active user limit'],
+                ['label' => 'Staff Accounts', 'value' => count($team).' / '.($user->tenant?->max_active_users ?? 3), 'meta' => str($user->tenant?->plan_code ?? 'bronze')->headline().' active user limit'],
                 ['label' => 'Open Since', 'value' => $today->format('g:i A'), 'meta' => 'Local business day'],
                 ['label' => 'Outlet', 'value' => $user->outlet?->code ?? 'MAIN', 'meta' => $user->outlet?->name ?? 'Main Outlet'],
             ],

@@ -37,11 +37,11 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::middleware(['tenant.context', 'bronze.limits'])->group(function () {
+    Route::middleware(['tenant.context', 'plan.limits'])->group(function () {
         Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
 
-        Route::middleware('role:OWNER,CASHIER')->group(function () {
-            Route::resource('tables', DiningTableController::class)->except(['show'])->middleware('throttle:writes');
+        Route::middleware(['role:OWNER,CASHIER', 'ability:orders.manage'])->group(function () {
+            Route::resource('tables', DiningTableController::class)->except(['show'])->middleware(['ability:tables.manage', 'throttle:writes']);
             Route::get('pos-orders', [ServiceController::class, 'pos'])->name('service.pos');
             Route::post('orders/start', [ServiceController::class, 'startOrder'])->middleware('throttle:writes')->name('orders.start');
             Route::post('orders/{order}/items', [ServiceController::class, 'addItem'])->middleware('throttle:writes')->name('orders.items.store');
@@ -56,51 +56,51 @@ Route::middleware('auth')->group(function () {
             Route::patch('print-jobs/{printJob}/retry', [PrintJobController::class, 'retry'])->middleware('throttle:writes')->name('print-jobs.retry');
         });
 
-        Route::middleware('role:OWNER,CASHIER,KITCHEN')->group(function () {
+        Route::middleware(['role:OWNER,CASHIER,KITCHEN', 'ability:orders.view'])->group(function () {
             Route::get('orders-queue', [ServiceController::class, 'queue'])->name('orders.queue');
         });
 
-        Route::middleware('role:KITCHEN')->group(function () {
+        Route::middleware(['role:KITCHEN', 'ability:kitchen.manage'])->group(function () {
             Route::get('kitchen', [KitchenController::class, 'index'])->name('kitchen.index');
             Route::patch('kitchen/tickets/{ticket}', [KitchenController::class, 'update'])->middleware('throttle:writes')->name('kitchen.tickets.update');
         });
 
         Route::middleware('role:OWNER')->group(function () {
-            Route::resource('staff', StaffController::class)->except(['show', 'destroy'])->middleware('throttle:writes');
-            Route::patch('staff/{staff}/status', [StaffController::class, 'status'])->middleware('throttle:writes')->name('staff.status');
-            Route::post('staff/{staff}/password-reset', [StaffController::class, 'sendPasswordReset'])->middleware('throttle:writes')->name('staff.password-reset');
+            Route::resource('staff', StaffController::class)->except(['show', 'destroy'])->middleware(['ability:staff.manage', 'throttle:writes']);
+            Route::patch('staff/{staff}/status', [StaffController::class, 'status'])->middleware(['ability:staff.manage', 'throttle:writes'])->name('staff.status');
+            Route::post('staff/{staff}/password-reset', [StaffController::class, 'sendPasswordReset'])->middleware(['ability:staff.manage', 'throttle:writes'])->name('staff.password-reset');
 
             Route::resource('menu-categories', MenuCategoryController::class)->parameters([
                 'menu-categories' => 'menuCategory',
-            ])->except(['show'])->middleware('throttle:writes');
-            Route::patch('menu-categories/{category}/restore', [MenuCategoryController::class, 'restore'])->middleware('throttle:writes')->name('menu-categories.restore');
+            ])->except(['show'])->middleware(['ability:catalog.manage', 'throttle:writes']);
+            Route::patch('menu-categories/{category}/restore', [MenuCategoryController::class, 'restore'])->middleware(['ability:catalog.manage', 'throttle:writes'])->name('menu-categories.restore');
 
             Route::resource('menu-items', MenuItemController::class)->parameters([
                 'menu-items' => 'menuItem',
-            ])->except(['show'])->middleware('throttle:writes');
-            Route::get('menu-item-editor', [MenuItemController::class, 'create'])->name('menu-item-editor');
-            Route::patch('menu-items/{item}/restore', [MenuItemController::class, 'restore'])->middleware('throttle:writes')->name('menu-items.restore');
+            ])->except(['show'])->middleware(['ability:catalog.manage', 'throttle:writes']);
+            Route::get('menu-item-editor', [MenuItemController::class, 'create'])->middleware('ability:catalog.manage')->name('menu-item-editor');
+            Route::patch('menu-items/{item}/restore', [MenuItemController::class, 'restore'])->middleware(['ability:catalog.manage', 'throttle:writes'])->name('menu-items.restore');
 
             Route::resource('modifier-groups', ModifierGroupController::class)->parameters([
                 'modifier-groups' => 'modifierGroup',
-            ])->except(['index', 'show'])->middleware('throttle:writes');
-            Route::get('modifier-groups/{modifierGroup}/options/create', [ModifierOptionController::class, 'create'])->name('modifier-options.create');
-            Route::post('modifier-groups/{modifierGroup}/options', [ModifierOptionController::class, 'store'])->middleware('throttle:writes')->name('modifier-options.store');
-            Route::get('modifier-groups/{modifierGroup}/options/{modifierOption}/edit', [ModifierOptionController::class, 'edit'])->name('modifier-options.edit');
-            Route::put('modifier-groups/{modifierGroup}/options/{modifierOption}', [ModifierOptionController::class, 'update'])->middleware('throttle:writes')->name('modifier-options.update');
-            Route::delete('modifier-groups/{modifierGroup}/options/{modifierOption}', [ModifierOptionController::class, 'destroy'])->middleware('throttle:writes')->name('modifier-options.destroy');
+            ])->except(['index', 'show'])->middleware(['ability:catalog.manage', 'throttle:writes']);
+            Route::get('modifier-groups/{modifierGroup}/options/create', [ModifierOptionController::class, 'create'])->middleware('ability:catalog.manage')->name('modifier-options.create');
+            Route::post('modifier-groups/{modifierGroup}/options', [ModifierOptionController::class, 'store'])->middleware(['ability:catalog.manage', 'throttle:writes'])->name('modifier-options.store');
+            Route::get('modifier-groups/{modifierGroup}/options/{modifierOption}/edit', [ModifierOptionController::class, 'edit'])->middleware('ability:catalog.manage')->name('modifier-options.edit');
+            Route::put('modifier-groups/{modifierGroup}/options/{modifierOption}', [ModifierOptionController::class, 'update'])->middleware(['ability:catalog.manage', 'throttle:writes'])->name('modifier-options.update');
+            Route::delete('modifier-groups/{modifierGroup}/options/{modifierOption}', [ModifierOptionController::class, 'destroy'])->middleware(['ability:catalog.manage', 'throttle:writes'])->name('modifier-options.destroy');
 
             Route::resource('stock-items', StockItemController::class)->parameters([
                 'stock-items' => 'stockItem',
-            ])->except(['show'])->middleware('throttle:writes');
-            Route::patch('stock-items/{stockItem}/restore', [StockItemController::class, 'restore'])->middleware('throttle:writes')->name('stock-items.restore');
-            Route::post('stock-items/{stockItem}/movements', [StockItemController::class, 'movement'])->middleware('throttle:writes')->name('stock-items.movements.store');
-            Route::get('recipes', [RecipeController::class, 'index'])->name('recipes.index');
-            Route::get('recipes/{menuItem}/edit', [RecipeController::class, 'edit'])->name('recipes.edit');
-            Route::put('recipes/{menuItem}', [RecipeController::class, 'update'])->middleware('throttle:writes')->name('recipes.update');
-            Route::get('reports/sales', [ReportController::class, 'sales'])->name('reports.sales');
-            Route::get('settings', [SettingsController::class, 'edit'])->name('settings.edit');
-            Route::put('settings', [SettingsController::class, 'update'])->middleware('throttle:writes')->name('settings.update');
+            ])->except(['show'])->middleware(['ability:inventory.manage', 'throttle:writes']);
+            Route::patch('stock-items/{stockItem}/restore', [StockItemController::class, 'restore'])->middleware(['ability:inventory.manage', 'throttle:writes'])->name('stock-items.restore');
+            Route::post('stock-items/{stockItem}/movements', [StockItemController::class, 'movement'])->middleware(['ability:inventory.adjust', 'throttle:writes'])->name('stock-items.movements.store');
+            Route::get('recipes', [RecipeController::class, 'index'])->middleware('ability:recipes.manage')->name('recipes.index');
+            Route::get('recipes/{menuItem}/edit', [RecipeController::class, 'edit'])->middleware('ability:recipes.manage')->name('recipes.edit');
+            Route::put('recipes/{menuItem}', [RecipeController::class, 'update'])->middleware(['ability:recipes.manage', 'throttle:writes'])->name('recipes.update');
+            Route::get('reports/sales', [ReportController::class, 'sales'])->middleware('ability:reports.sales.view')->name('reports.sales');
+            Route::get('settings', [SettingsController::class, 'edit'])->middleware('ability:settings.manage')->name('settings.edit');
+            Route::put('settings', [SettingsController::class, 'update'])->middleware(['ability:settings.manage', 'throttle:writes'])->name('settings.update');
         });
 
         Route::get('{page}', [DashboardController::class, 'index'])

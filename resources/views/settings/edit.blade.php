@@ -59,18 +59,12 @@
 
                 <div class="card mb-0">
                     <div class="card-header">
-                        <h5 class="mb-1">Bronze Feature Flags</h5>
+                        <h5 class="mb-1">{{ str($tenant->plan_code)->headline() }} Feature Flags</h5>
                         <p class="text-muted mb-0">Locked plan capabilities.</p>
                     </div>
                     <div class="card-body">
                         <div class="row g-3">
-                            @foreach ([
-                                'qr_ordering' => false,
-                                'delivery' => false,
-                                'inventory_basic' => true,
-                                'kds_basic' => true,
-                                'api_read' => false,
-                            ] as $flag => $enabled)
+                            @foreach ($featureFlags as $flag => $enabled)
                                 <div class="col-md-6">
                                     <div class="border rounded-3 p-3 d-flex justify-content-between align-items-center">
                                         <span class="fw-semibold">{{ $flag }}</span>

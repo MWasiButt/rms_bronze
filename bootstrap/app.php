@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Application;
+use App\Http\Middleware\EnsureAbility;
 use App\Http\Middleware\EnsureFeatureFlag;
 use App\Http\Middleware\EnsurePlanALimits;
 use App\Http\Middleware\EnsureTenantContext;
@@ -21,7 +22,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->redirectUsersTo('/');
         $middleware->alias([
             'plan.a' => EnsurePlanALimits::class,
+            'plan.limits' => EnsurePlanALimits::class,
             'bronze.limits' => EnsurePlanALimits::class,
+            'ability' => EnsureAbility::class,
             'feature' => EnsureFeatureFlag::class,
             'tenant.context' => EnsureTenantContext::class,
             'role' => EnsureRole::class,
